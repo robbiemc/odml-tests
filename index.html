@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ODML Tests - Prompt API</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Prompt API</h1>
+      <span class="availability">Checking availability...</span>
+    </header>
+
+    <!--
+    TODO:
+      Global settings:
+        * samplingMode
+        * expectedInputs
+        * expectedOutputs
+
+      Model download UI
+    -->
+
+    <section>
+      <h2>prompt</h2>
+      <code class="source">
+        const session = await LanguageModel.create();
+        const result = await session.prompt("Write a short, upbeat poem about coding.");
+        log(result);
+      </code>
+      <div class="controls">
+        <button class="run" data-count="1">Run</button>
+        <button class="run" data-count="3">x3</button>
+        <button class="run" data-count="5">x5</button>
+        <span class="status"></span>
+      </div>
+      <table class="results">
+        <tr>
+          <th class="output">Output</th>
+          <th class="ttft">TTFT</th>
+          <!-- TODO: input tokens per second too -->
+          <th class="tks">tok/s</th>
+        </tr>
+      </table>
+    </section>
+
+    <template id="output-row-template">
+      <tr>
+        <td class="output"></td>
+        <td class="ttft"></td>
+        <td class="tks"></td>
+      </tr>
+    </template>
+
+    <script src="index.js"></script>
+  </body>
+</html>
