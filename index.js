@@ -7,13 +7,18 @@ function init() {
   }
 }
 
-function checkAvailability() {
-  LanguageModel.availability().then((status) => {
-    $('.availability').innerText = status;
-    if (status === 'available') {
-      document.body.classList.add('available');
-    }
-  });
+async function checkAvailability() {
+  const status = await LanguageModel.availability();
+  $('.availability').innerText = status;
+
+  const available = status === 'available';
+  for (let control of $$('section button')) {
+    control.disabled = !available;
+  }
+
+  if (status === 'available') {
+    document.body.classList.add('available');
+  }
 }
 
 class Test {
@@ -38,10 +43,10 @@ class Test {
       // TODO: handle cancel and error events
       runner.addEventListener('output', (e) => {
         $('.output', row).innerText += e.detail.string;
-        $('.tks', row).innerText = Math.round(runner.tks() * 1000, 1);
-        const ttft = Math.round(runner.ttft() / 1000, 2);
+        $('.tks', row).innerText = round(runner.tks() * 1000, 1);
+        const ttft = runner.ttft();
         if (ttft > 0) {
-          $('.ttft', row).innerText = ttft;
+          $('.ttft', row).innerText = round(ttft / 1000, 2);
         }
       });
       await runner.execute();
@@ -86,10 +91,11 @@ class TestRun extends EventTarget {
   }
 
   tks() {
-    if (this.endTime > 0) {
-      return this.tokenCount / (this.endTime - this.startTime);
+    if (this.firstTokenTime > 0) {
+      const end = this.endTime || Date.now();
+      return this.tokenCount / (end - this.firstTokenTime);
     }
-    return this.tokenCount / (Date.now() - this.startTime);
+    return 0;
   }
 
   #onModelOutput(str) {
@@ -136,6 +142,11 @@ function $(selector, base = document.body) {
 
 function $$(selector, base = document.body) {
   return [...base.querySelectorAll(selector)];
+}
+
+function round(x, precision = 0) {
+  const n = Math.pow(10, precision);
+  return Math.round(x * n) / n;
 }
 
 function registerTemplates() {

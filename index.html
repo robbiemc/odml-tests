@@ -25,9 +25,17 @@
     <section>
       <h2>prompt</h2>
       <code class="source">
+        /*
         const session = await LanguageModel.create();
         const result = await session.prompt("Write a short, upbeat poem about coding.");
         log(result);
+        */
+        const session = await LanguageModel.create();
+        const stream = session.promptStreaming("Tell me a one-paragraph story about a brave robot.");
+
+        for await (const chunk of stream) {
+            log(chunk);
+        }
       </code>
       <div class="controls">
         <button class="run" data-count="1">Run</button>
