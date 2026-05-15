@@ -1,9 +1,9 @@
 function init() {
-  registerTemplates();
+  TestCase.registerCustomElement();
   checkAvailability();
 
   for (let section of $$('section')) {
-    new Test(section);
+    new TestCase(section);
   }
 }
 
@@ -21,13 +21,19 @@ async function checkAvailability() {
   }
 }
 
-class Test {
-  constructor(el) {
-    this.source = $('.source', el).innerText;
-    this.status = $('.status', el);
-    this.results = $('.results > tbody', el);
+class TestCase extends HTMLElement {
+  constructor() {
+    super();
+    const template = $('#test-case-template');
+    const shadowRoot = this.attachShadow({ mode: 'open' });
+    shadowRoot.appendChild(document.importNode(template.content, true));
 
-    for (let btn of $$('.run', el)) {
+    const sourceSlot = $('slot[name=source]', shadowRoot);
+    this.source = sourceSlot.assignedElements()[0].innerText;
+    this.status = $('.status', shadowRoot);
+    this.results = $('.results > tbody', shadowRoot);
+
+    for (let btn of $$('.run', shadowRoot)) {
       btn.addEventListener('click', this.run.bind(this));
     }
   }
@@ -51,6 +57,10 @@ class Test {
       });
       await runner.execute();
     }
+  }
+
+  static registerCustomElement() {
+    customElements.define('test-case', TestCase);
   }
 }
 
@@ -147,22 +157,6 @@ function $$(selector, base = document.body) {
 function round(x, precision = 0) {
   const n = Math.pow(10, precision);
   return Math.round(x * n) / n;
-}
-
-function registerTemplates() {
-  for (let template of $$('template')) {
-    const tagName = template.id.split('-template')[0];
-    customElements.define(
-      tagName,
-      class extends HTMLElement {
-        constructor() {
-          super();
-          const shadowRoot = this.attachShadow({ mode: 'open' });
-          shadowRoot.appendChild(document.importNode(template.content, true));
-        }
-      },
-    );
-  }
 }
 
 document.addEventListener('DOMContentLoaded', init);

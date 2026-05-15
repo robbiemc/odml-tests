@@ -22,14 +22,18 @@
       Model download UI
     -->
 
-    <section>
-      <h2>prompt</h2>
-      <code class="source">
-        /*
+    <test-case>
+      <code slot="title">prompt()</code>
+      <code slot="source">
         const session = await LanguageModel.create();
         const result = await session.prompt("Write a short, upbeat poem about coding.");
         log(result);
-        */
+      </code>
+    </test-case>
+
+    <test-case>
+      <code slot="title">promptStreaming()</code>
+      <code slot="source">
         const session = await LanguageModel.create();
         const stream = session.promptStreaming("Tell me a one-paragraph story about a brave robot.");
 
@@ -37,21 +41,27 @@
             log(chunk);
         }
       </code>
-      <div class="controls">
-        <button class="run" data-count="1">Run</button>
-        <button class="run" data-count="3">x3</button>
-        <button class="run" data-count="5">x5</button>
-        <span class="status"></span>
-      </div>
-      <table class="results">
-        <tr>
-          <th class="output">Output</th>
-          <th class="ttft">TTFT</th>
-          <!-- TODO: input tokens per second too -->
-          <th class="tks">tok/s</th>
-        </tr>
-      </table>
-    </section>
+    </test-case>
+
+    <template id="test-case-template">
+      <section>
+        <h2><slot name="title">Test case title</slot></h2>
+        <pre class="source"><slot name="source"></slot></pre>
+        <div class="controls">
+          <button class="run" data-count="1">Run</button>
+          <button class="run" data-count="3">x3</button>
+          <button class="run" data-count="5">x5</button>
+          <span class="status"></span>
+        </div>
+        <table class="results">
+          <tr>
+            <th class="output">Output</th>
+            <th class="ttft">TTFT</th>
+            <th class="tks">tok/s</th>
+          </tr>
+        </table>
+      </section>
+    </template>
 
     <template id="output-row-template">
       <tr>
