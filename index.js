@@ -13,22 +13,18 @@ TODO:
 function init() {
   TestCase.registerCustomElement();
   checkAvailability();
-
-  for (let section of $$('section')) {
-    new TestCase(section);
-  }
 }
 
 async function checkAvailability() {
-  const status = await LanguageModel.availability();
+  // const status = await LanguageModel.availability();
+  const status = 'downloadable';
   const statusElement = $('.availability');
   statusElement.innerText = status;
   statusElement.dataset.label = status;
 
   const available = status === 'available';
-  // TODO: fix button disabling
-  for (let control of $$('section button')) {
-    control.disabled = !available;
+  for (let testCase of $$('test-case')) {
+    testCase.setEnabled(available);
   }
 }
 
@@ -49,7 +45,8 @@ class TestCase extends HTMLElement {
     this.status = $('.status', shadowRoot);
     this.results = $('.results > tbody', shadowRoot);
 
-    for (let btn of $$('.run', shadowRoot)) {
+    this.buttons = $$('.run', shadowRoot);
+    for (let btn of this.buttons) {
       btn.addEventListener('click', this.run.bind(this));
     }
   }
@@ -83,6 +80,12 @@ class TestCase extends HTMLElement {
         }
       });
       await runner.execute();
+    }
+  }
+
+  setEnabled(enabled) {
+    for (let btn of this.buttons) {
+      btn.disabled = !enabled;
     }
   }
 
