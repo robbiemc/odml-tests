@@ -16,16 +16,6 @@
         </p>
       </header>
 
-      <!--
-      TODO:
-        Global settings:
-          * samplingMode
-          * expectedInputs
-          * expectedOutputs
-
-        Model download UI
-      -->
-
       <test-case>
         <code slot="title">prompt()</code>
         <code slot="source">
@@ -63,9 +53,15 @@
         </div>
         <table class="results">
           <tr>
-            <th class="output">Output</th>
+            <th colspan="2">Output</th>
             <th class="ttft">TTFT</th>
             <th class="tks">tok/s</th>
+          </tr>
+          <tr class="placeholder">
+            <td></td>
+            <td>Not run yet</td>
+            <td></td>
+            <td></td>
           </tr>
         </table>
       </section>
@@ -73,7 +69,8 @@
 
     <template id="output-row-template">
       <tr>
-        <td class="output"></td>
+        <td class="collapse"><button></button></td>
+        <td class="output"><span></span></td>
         <td class="ttft"></td>
         <td class="tks"></td>
       </tr>

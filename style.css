@@ -76,3 +76,55 @@ body {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
+.results {
+  width: 100%;
+  border-collapse: collapse;
+}
+.results tr:not(:last-child) {
+  border-bottom: 1px solid #ccc;
+}
+.results td {
+  padding: 0.25rem;
+}
+.results tr:nth-child(2n+3) {
+  background-color: #f3f3f3;
+}
+.results .placeholder {
+  font-style: italic;
+}
+.results td {
+  vertical-align: baseline;
+}
+.results .collapse {
+  width: 25px;
+}
+.results .collapse > button {
+  background-color: transparent;
+  border-width: 0;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+.results .collapse > button::before {
+  content: '▼';
+}
+.results .collapse.collapsed > button::before {
+  content: '▶';
+}
+.results .collapse.collapsed + .output > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+  color: gray;
+}
+.results .output {
+  font-family: monospace;
+}
+.results .ttft,
+.results .tks {
+  width: 100px;
+  text-align: center;
+}

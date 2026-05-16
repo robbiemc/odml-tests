@@ -1,3 +1,16 @@
+/*
+TODO:
+ * Option to disable stats
+ * Fix button enablement
+ * Download UI
+ * Other test cases
+ * Multimodality
+ * Cancellation
+ * Other APIs
+ * Multi-session UI?
+ * Maybe add global samplingMode flag?
+*/
+
 function init() {
   TestCase.registerCustomElement();
   checkAvailability();
@@ -39,20 +52,31 @@ class TestCase extends HTMLElement {
   }
 
   async run(e) {
+    const placeholder = $('.placeholder', this.results);
+    if (placeholder !== null) {
+      this.results.removeChild(placeholder);
+    }
+
     const count = e.target.dataset.count;
     const rowTemplate = $('#output-row-template').content.children[0];
     for (let i = 0; i < count; i++) {
+      $('tr:last-child > .collapse', this.results)?.classList.add('collapsed');
+
       const row = document.importNode(rowTemplate, true);
+      const collapse = $('.collapse', row);
+      $('button', collapse).addEventListener('click', () => {
+        collapse.classList.toggle('collapsed');
+      });
       this.results.appendChild(row);
 
       const runner = new TestRun(this.source);
       // TODO: handle cancel and error events
       runner.addEventListener('output', (e) => {
-        $('.output', row).innerText += e.detail.string;
+        $('.output > span', row).innerText += e.detail.string;
         $('.tks', row).innerText = round(runner.tks() * 1000, 1);
         const ttft = runner.ttft();
         if (ttft > 0) {
-          $('.ttft', row).innerText = round(ttft / 1000, 2);
+          $('.ttft', row).innerText = round(ttft / 1000, 2) + 's';
         }
       });
       await runner.execute();
