@@ -1,6 +1,5 @@
 /*
 TODO:
- * Option to disable stats
  * Fix button enablement
  * Download UI
  * Other test cases
@@ -39,6 +38,10 @@ class TestCase extends HTMLElement {
     const template = $('#test-case-template');
     const shadowRoot = this.attachShadow({ mode: 'open' });
     shadowRoot.appendChild(document.importNode(template.content, true));
+
+    if (this.attributes.nostats) {
+      $('.test-case', shadowRoot).classList.add('nostats');
+    }
 
     const sourceEl = $('slot[name=source]', shadowRoot).assignedElements()[0];
     sourceEl.innerText = unindent(sourceEl.innerText);

@@ -128,3 +128,7 @@ body {
   width: 100px;
   text-align: center;
 }
+.test-case.nostats .results .ttft,
+.test-case.nostats .results .tks {
+  display: none;
+}
