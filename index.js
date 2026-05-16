@@ -9,15 +9,14 @@ function init() {
 
 async function checkAvailability() {
   const status = await LanguageModel.availability();
-  $('.availability').innerText = status;
+  const statusElement = $('.availability');
+  statusElement.innerText = status;
+  statusElement.dataset.label = status;
 
   const available = status === 'available';
+  // TODO: fix button disabling
   for (let control of $$('section button')) {
     control.disabled = !available;
-  }
-
-  if (status === 'available') {
-    document.body.classList.add('available');
   }
 }
 
@@ -28,8 +27,9 @@ class TestCase extends HTMLElement {
     const shadowRoot = this.attachShadow({ mode: 'open' });
     shadowRoot.appendChild(document.importNode(template.content, true));
 
-    const sourceSlot = $('slot[name=source]', shadowRoot);
-    this.source = sourceSlot.assignedElements()[0].innerText;
+    const sourceEl = $('slot[name=source]', shadowRoot).assignedElements()[0];
+    sourceEl.innerText = unindent(sourceEl.innerText);
+    this.source = sourceEl.innerText;
     this.status = $('.status', shadowRoot);
     this.results = $('.results > tbody', shadowRoot);
 
@@ -157,6 +157,25 @@ function $$(selector, base = document.body) {
 function round(x, precision = 0) {
   const n = Math.pow(10, precision);
   return Math.round(x * n) / n;
+}
+
+function unindent(s) {
+  let lines = s.split('\n');
+  while (lines.length > 0 && lines[0].trim() === '') {
+    lines.shift();
+  }
+  if (lines.length === 0) {
+    return '';
+  }
+  const prefix = /(\s*).*?/.exec(lines[0])[0];
+  let unindented = '';
+  for (let line of lines) {
+    if (line.startsWith(prefix)) {
+      line = line.substr(prefix.length);
+    }
+    unindented += line + '\n';
+  }
+  return unindented.trimEnd();
 }
 
 document.addEventListener('DOMContentLoaded', init);

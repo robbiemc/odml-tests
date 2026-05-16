@@ -1,0 +1,78 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.availability-message {
+  font-weight: bold;
+}
+.availability {
+  text-transform: capitalize;
+  color: white;
+  border-radius: 100px;
+  padding: .25rem .75rem;
+}
+.availability[data-label="available"] {
+  background-color: #2c4;
+}
+.availability[data-label="unavailable"] {
+  background-color: #c22;
+}
+.availability[data-label="downloadable"],
+.availability[data-label="downloading"] {
+  background-color: #cc5;
+}
+
+.test-case {
+  background-color: white;
+  border-radius: .75rem;
+  margin-bottom: 1.5rem;
+  padding: .75rem 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+.test-case > .title {
+  margin-top: 0;
+}
+.test-case > .source {
+  border: 1px solid #ddd;
+  border-radius: .5rem;
+  padding: .5rem;
+  line-height: 1.4;
+}
+.test-case .run-group {
+  display: inline-flex;
+}
+.test-case button.run {
+  padding: .75rem 1rem;
+  border: 1px solid #0866f8;
+  color: #0866f8;
+  background-color: transparent;
+  cursor: pointer;
+}
+.test-case button.run:not(:first-child) {
+  margin-left: -1px;
+}
+.test-case button.run:first-child:hover,
+.test-case button.run:hover {
+  background-color: #0b55dd;
+  color: white;
+}
+.test-case button.run:first-child {
+  background-color: #0866f8;
+  color: white;
+  padding: .75rem 1.5rem;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.test-case button.run:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}

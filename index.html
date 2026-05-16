@@ -7,50 +7,58 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header>
-      <h1>Prompt API</h1>
-      <span class="availability">Checking availability...</span>
-    </header>
+    <div class="container">
+      <header>
+        <h1>Prompt API</h1>
+        <p class="availability-message">
+          API Status:
+          <span class="availability">Checking availability...</span>
+        </p>
+      </header>
 
-    <!--
-    TODO:
-      Global settings:
-        * samplingMode
-        * expectedInputs
-        * expectedOutputs
+      <!--
+      TODO:
+        Global settings:
+          * samplingMode
+          * expectedInputs
+          * expectedOutputs
 
-      Model download UI
-    -->
+        Model download UI
+      -->
 
-    <test-case>
-      <code slot="title">prompt()</code>
-      <code slot="source">
-        const session = await LanguageModel.create();
-        const result = await session.prompt("Write a short, upbeat poem about coding.");
-        log(result);
-      </code>
-    </test-case>
+      <test-case>
+        <code slot="title">prompt()</code>
+        <code slot="source">
+          const session = await LanguageModel.create();
+          const result = await session.prompt("Write a short, upbeat poem about coding.");
+          log(result);
+        </code>
+      </test-case>
 
-    <test-case>
-      <code slot="title">promptStreaming()</code>
-      <code slot="source">
-        const session = await LanguageModel.create();
-        const stream = session.promptStreaming("Tell me a one-paragraph story about a brave robot.");
+      <test-case>
+        <code slot="title">promptStreaming()</code>
+        <code slot="source">
+          const session = await LanguageModel.create();
+          const stream = session.promptStreaming("Tell me a one-paragraph story about a brave robot.");
 
-        for await (const chunk of stream) {
+          for await (const chunk of stream) {
             log(chunk);
-        }
-      </code>
-    </test-case>
+          }
+        </code>
+      </test-case>
+    </div>
 
     <template id="test-case-template">
-      <section>
-        <h2><slot name="title">Test case title</slot></h2>
+      <link rel="stylesheet" href="style.css" />
+      <section class="test-case">
+        <h2 class="title"><slot name="title">Test case title</slot></h2>
         <pre class="source"><slot name="source"></slot></pre>
         <div class="controls">
-          <button class="run" data-count="1">Run</button>
-          <button class="run" data-count="3">x3</button>
-          <button class="run" data-count="5">x5</button>
+          <span class="run-group">
+            <button class="run" data-count="1">Run</button>
+            <button class="run" data-count="3">x3</button>
+            <button class="run" data-count="5">x5</button>
+          </span>
           <span class="status"></span>
         </div>
         <table class="results">
