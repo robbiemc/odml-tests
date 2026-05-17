@@ -51,22 +51,16 @@
           </span>
           <span class="status"></span>
         </div>
-        <table class="results">
+        <table class="results empty">
           <thead>
             <tr>
-              <th colspan="2">Output</th>
+              <th></th>
+              <th>Output</th>
               <th class="ttft">TTFT</th>
               <th class="tks">tok/s</th>
             </tr>
           </thead>
-          <tbody>
-            <tr class="placeholder">
-              <td></td>
-              <td>Not run yet</td>
-              <td class="ttft"></td>
-              <td class="tks"></td>
-            </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
       </section>
     </template>
@@ -74,7 +68,7 @@
     <template id="output-row-template">
       <tr>
         <td class="collapse"><button></button></td>
-        <td class="output"><span></span></td>
+        <td class="output"><span><i>Waiting for output...</i></span></td>
         <td class="ttft"></td>
         <td class="tks"></td>
       </tr>

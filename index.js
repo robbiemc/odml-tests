@@ -51,11 +51,6 @@ class TestCase extends HTMLElement {
   }
 
   async run(e) {
-    const placeholder = $('.placeholder', this.results);
-    if (placeholder !== null) {
-      this.results.removeChild(placeholder);
-    }
-
     const count = e.target.dataset.count;
     const rowTemplate = $('#output-row-template').content.children[0];
     for (let i = 0; i < count; i++) {
@@ -67,11 +62,12 @@ class TestCase extends HTMLElement {
         collapse.classList.toggle('collapsed');
       });
       this.results.appendChild(row);
+      this.results.parentElement.classList.remove('empty');
 
       const runner = new TestRun(this.source);
       // TODO: handle cancel and error events
-      runner.addEventListener('output', (e) => {
-        $('.output > span', row).innerText += e.detail.string;
+      runner.addEventListener('output', (_) => {
+        $('.output > span', row).innerText = runner.output();
         $('.tks', row).innerText = round(runner.tks() * 1000, 1);
         const ttft = runner.ttft();
         if (ttft > 0) {
