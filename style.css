@@ -111,20 +111,18 @@ button.primary:disabled {
   width: 100%;
   border-collapse: collapse;
 }
-.results tr:not(:last-child) {
-  border-bottom: 1px solid #ccc;
+.results > tbody > tr {
+  border-top: 1px solid rgb(214, 217, 224);
 }
 .results td {
   padding: 0.25rem;
+  vertical-align: baseline;
 }
-.results tr:nth-child(2n+3) {
-  background-color: #f3f3f3;
+.results > tbody > tr:nth-child(2n) {
+  background-color: rgb(249, 250, 251);
 }
 .results .placeholder {
   font-style: italic;
-}
-.results td {
-  vertical-align: baseline;
 }
 .results .collapse {
   width: 25px;
