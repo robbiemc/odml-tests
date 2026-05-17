@@ -40,12 +40,12 @@
 
     <template id="test-case-template">
       <link rel="stylesheet" href="style.css" />
-      <section class="test-case">
+      <section class="test-case card">
         <h2 class="title"><slot name="title">Test case title</slot></h2>
-        <pre class="source"><slot name="source"></slot></pre>
+        <pre class="source-box"><slot name="source"></slot></pre>
         <div class="controls">
-          <span class="run-group">
-            <button class="run" data-count="1">Run</button>
+          <span class="button-group">
+            <button class="run primary wide" data-count="1">Run</button>
             <button class="run" data-count="3">x3</button>
             <button class="run" data-count="5">x5</button>
           </span>

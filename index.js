@@ -1,6 +1,5 @@
 /*
 TODO:
- * Fix button enablement
  * Download UI
  * Other test cases
  * Multimodality
@@ -16,8 +15,8 @@ function init() {
 }
 
 async function checkAvailability() {
-  // const status = await LanguageModel.availability();
-  const status = 'downloadable';
+  const status = await LanguageModel.availability();
+  // const status = 'unavailable';
   const statusElement = $('.availability');
   statusElement.innerText = status;
   statusElement.dataset.label = status;
