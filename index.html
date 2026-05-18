@@ -25,7 +25,7 @@
           const stream = session.promptStreaming("Tell me a one-paragraph story about a brave robot.");
 
           for await (const chunk of stream) {
-            logOutput(chunk);
+            logToken(chunk);
           }
         </code>
       </test-case>
@@ -40,7 +40,7 @@
           });
           const stream = await session.promptStreaming("What's the best thing about sailing the high seas?");
           for await (const chunk of stream) {
-              logOutput(chunk);
+              logToken(chunk);
           }
         </code>
       </test-case>
@@ -54,14 +54,14 @@
           logInfo("Assistant: ");
           const stream1 = session.promptStreaming("Tell me a one liner about cats.");
           for await (const chunk of stream1) {
-            logOutput(chunk);
+            logToken(chunk);
           }
 
           logInfo("\nUser: Tell me another one.\n");
           logInfo("Assistant: ");
           const stream2 = session.promptStreaming("Tell me another one.");
           for await (const chunk of stream2) {
-            logOutput(chunk);
+            logToken(chunk);
           }
         </code>
       </test-case>
@@ -79,13 +79,13 @@
           const stream1 = await clone1.promptStreaming("What is the biggest city?");
           logInfo('clone1: ');
           for await (const chunk of stream1) {
-            logOutput(chunk);
+            logToken(chunk);
           }
 
           logInfo('\nclone2: ');
           const stream2 = await clone2.promptStreaming("What is the most iconic food?");
           for await (const chunk of stream2) {
-            logOutput(chunk);
+            logToken(chunk);
           }
         </code>
       </test-case>
@@ -104,7 +104,7 @@
           });
           const stream = await session.promptStreaming("This is a big improvement!");
           for await (const chunk of stream) {
-            logOutput(chunk);
+            logToken(chunk);
           }
         </code>
       </test-case>
@@ -128,7 +128,7 @@
           );
 
           const parsed = JSON.parse(result);
-          logOutput(JSON.stringify(parsed, null, 2));
+          logToken(JSON.stringify(parsed, null, 2));
         </code>
       </test-case>
 
@@ -143,7 +143,7 @@
             { responseConstraint: hexColorRegExp }
           );
 
-          logOutput(result);
+          logToken(result);
         </code>
       </test-case>
 
@@ -165,9 +165,9 @@
             { role: "assistant", content: functionSignature, prefix: true }
           ]);
 
-          logInfo(functionSignature);
+          log(functionSignature);
           for await (const chunk of stream) {
-              logOutput(chunk);
+              logToken(chunk);
           }
         </code>
       </test-case>
@@ -183,7 +183,7 @@
 
           const stream = await session.promptStreaming("Summarize the facts I've given you in a single sentence.");
           for await (const chunk of stream) {
-            logOutput(chunk);
+            logToken(chunk);
           }
         </code>
       </test-case>
@@ -200,7 +200,7 @@
           );
 
           for await (const chunk of stream) {
-              logOutput(chunk);
+              logToken(chunk);
           }
         </code>
       </test-case>
@@ -223,7 +223,7 @@
           }]);
 
           for await (const chunk of stream) {
-            logOutput(chunk);
+            logToken(chunk);
           }
         </code>
         <img slot="inputs" id="img-apple" src="./media/apple.jpg">
@@ -242,7 +242,7 @@
         <code slot="source">
           const session = await LanguageModel.create();
           const result = await session.prompt("Write a short, upbeat poem about coding.");
-          logOutput(result);
+          logToken(result);
         </code>
       </test-case>
     </div>

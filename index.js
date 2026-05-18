@@ -1,7 +1,6 @@
 /*
 TODO:
  * Multimodality
- * Rethink log* function names?
  * s/createAbortController/setAbortController/
  * Handle exceptions gracefully
  * Disable buttons while script executing
@@ -199,10 +198,10 @@ class TestRun extends EventTarget {
     this.dispatchEvent(new CustomEvent(event, { detail }));
   }
 
-  static #createRunner(logInfo, logOutput, createAbortController, source) {
+  static #createRunner(log, logToken, createAbortController, source) {
     return new Function(
-      'logInfo',
-      'logOutput',
+      'log',
+      'logToken',
       'createAbortController',
       'LanguageModel',
       'Translator',
@@ -213,8 +212,8 @@ class TestRun extends EventTarget {
       `return (async () => { ${source} })();`,
     ).bind(
       null,
-      logInfo,
-      logOutput,
+      log,
+      logToken,
       createAbortController,
       window.LanguageModel,
       window.Translator,
