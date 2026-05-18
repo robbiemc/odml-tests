@@ -25,7 +25,7 @@
           const stream = session.promptStreaming("Tell me a one-paragraph story about a brave robot.");
 
           for await (const chunk of stream) {
-            log(chunk);
+            logOutput(chunk);
           }
         </code>
       </test-case>
@@ -40,7 +40,7 @@
           });
           const stream = await session.promptStreaming("What's the best thing about sailing the high seas?");
           for await (const chunk of stream) {
-              log(chunk);
+              logOutput(chunk);
           }
         </code>
       </test-case>
@@ -50,18 +50,18 @@
         <code slot="source">
           const session = await LanguageModel.create();
 
-          log("User: Tell me a one liner about cats.\n");
-          log("Assistant: ");
+          logInfo("User: Tell me a one liner about cats.\n");
+          logInfo("Assistant: ");
           const stream1 = session.promptStreaming("Tell me a one liner about cats.");
           for await (const chunk of stream1) {
-            log(chunk);
+            logOutput(chunk);
           }
 
-          log("\nUser: Tell me another one.\n");
-          log("Assistant: ");
+          logInfo("\nUser: Tell me another one.\n");
+          logInfo("Assistant: ");
           const stream2 = session.promptStreaming("Tell me another one.");
           for await (const chunk of stream2) {
-            log(chunk);
+            logOutput(chunk);
           }
         </code>
       </test-case>
@@ -77,15 +77,15 @@
           const clone2 = await baseSession.clone();
 
           const stream1 = await clone1.promptStreaming("What is the biggest city?");
-          log('clone1: ');
+          logInfo('clone1: ');
           for await (const chunk of stream1) {
-            log(chunk);
+            logOutput(chunk);
           }
 
-          log('\nclone2: ');
+          logInfo('\nclone2: ');
           const stream2 = await clone2.promptStreaming("What is the most iconic food?");
           for await (const chunk of stream2) {
-            log(chunk);
+            logOutput(chunk);
           }
         </code>
       </test-case>
@@ -104,7 +104,7 @@
           });
           const stream = await session.promptStreaming("This is a big improvement!");
           for await (const chunk of stream) {
-            log(chunk);
+            logOutput(chunk);
           }
         </code>
       </test-case>
@@ -128,7 +128,7 @@
           );
 
           const parsed = JSON.parse(result);
-          log(JSON.stringify(parsed, null, 2));
+          logOutput(JSON.stringify(parsed, null, 2));
         </code>
       </test-case>
 
@@ -143,7 +143,7 @@
             { responseConstraint: hexColorRegExp }
           );
 
-          log(result);
+          logOutput(result);
         </code>
       </test-case>
 
@@ -165,9 +165,9 @@
             { role: "assistant", content: functionSignature, prefix: true }
           ]);
 
-          log(functionSignature);
+          logInfo(functionSignature);
           for await (const chunk of stream) {
-              log(chunk);
+              logOutput(chunk);
           }
         </code>
       </test-case>
@@ -179,23 +179,55 @@
           await session.append([{role: "user", content: "Fact 1: The sky is blue."}]);
           await session.append([{role: "user", content: "Fact 2: Grass is green."}]);
 
-          log("Appended two facts to the session context, now asking for a summary...\n\n");
+          logInfo("Appended two facts to the session context, now asking for a summary...\n\n");
 
           const stream = await session.promptStreaming("Summarize the facts I've given you in a single sentence.");
           for await (const chunk of stream) {
-            log(chunk);
+            logOutput(chunk);
           }
         </code>
       </test-case>
 
-      <!--
       <test-case>
         <span slot="title">Cancellation</span>
         <code slot="source">
-          // TODO
+          const controller = createAbortController();
+
+          const session = await LanguageModel.create();
+          const stream = session.promptStreaming(
+              "Tell me the entire history of AI in great detail.",
+              { signal: controller.signal }
+          );
+
+          for await (const chunk of stream) {
+              logOutput(chunk);
+          }
         </code>
       </test-case>
-      -->
+
+      <test-case>
+        <span slot="title">Multimodality - Image</span>
+        <code slot="source">
+          const session = await LanguageModel.create({
+            expectedInputs: [{ type: "image" }]
+          });
+
+          const image = document.getElementById('img-apple');
+
+          const stream = await session.promptStreaming([{
+            role: "user",
+            content: [
+              { type: "text", value: "Describe the image." },
+              { type: "image", value: image }
+            ]
+          }]);
+
+          for await (const chunk of stream) {
+            logOutput(chunk);
+          }
+        </code>
+        <img slot="inputs" id="img-apple" src="./media/apple.jpg">
+      </test-case>
 
       <!--
       <test-case>
@@ -210,7 +242,7 @@
         <code slot="source">
           const session = await LanguageModel.create();
           const result = await session.prompt("Write a short, upbeat poem about coding.");
-          log(result);
+          logOutput(result);
         </code>
       </test-case>
     </div>
@@ -220,12 +252,14 @@
       <section class="test-case card">
         <h2 class="title"><slot name="title">Test case title</slot></h2>
         <pre class="source-box"><slot name="source"></slot></pre>
+        <div class="inputs"><slot name="inputs"></slot></div>
         <div class="controls">
           <span class="button-group">
             <button class="run primary wide" data-count="1">Run</button>
             <button class="run" data-count="3">x3</button>
             <button class="run" data-count="5">x5</button>
           </span>
+          <button class="danger abort hidden">Abort</button>
           <span class="status"></span>
         </div>
         <table class="results empty">

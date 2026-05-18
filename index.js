@@ -1,9 +1,11 @@
 /*
 TODO:
  * Multimodality
- * Cancellation
+ * Rethink log* function names?
+ * s/createAbortController/setAbortController/
+ * Handle exceptions gracefully
+ * Disable buttons while script executing
  * Other APIs
- * Multi-session UI?
  * Maybe add global samplingMode flag?
 */
 
@@ -65,6 +67,7 @@ class TestCase extends HTMLElement {
     const sourceEl = $('slot[name=source]', shadowRoot).assignedElements()[0];
     sourceEl.innerText = unindent(sourceEl.innerText);
     this.source = sourceEl.innerText;
+    this.abort = $('.abort', shadowRoot);
     this.status = $('.status', shadowRoot);
     this.results = $('.results > tbody', shadowRoot);
 
@@ -89,7 +92,7 @@ class TestCase extends HTMLElement {
       this.results.parentElement.classList.remove('empty');
 
       const runner = new TestRun(this.source);
-      // TODO: handle cancel and error events
+      // TODO: handle error events
       runner.addEventListener('output', (_) => {
         $('.output > span', row).innerText = runner.output();
         $('.tks', row).innerText = round(runner.tks() * 1000, 1);
@@ -97,6 +100,13 @@ class TestCase extends HTMLElement {
         if (ttft > 0) {
           $('.ttft', row).innerText = round(ttft / 1000, 2) + 's';
         }
+      });
+      runner.addEventListener('createdabortcontroller', (e) => {
+        this.abort.addEventListener('click', (_) => {
+          e.detail.controller.abort();
+          this.abort.classList.add('hidden');
+        });
+        this.abort.classList.remove('hidden');
       });
       await runner.execute();
     }
@@ -116,7 +126,12 @@ class TestCase extends HTMLElement {
 class TestRun extends EventTarget {
   constructor(source) {
     super();
-    this.runFn = TestRun.#createRunner(this.#onModelOutput.bind(this), source);
+    this.runFn = TestRun.#createRunner(
+      this.#onOutput.bind(this),
+      this.#onModelOutput.bind(this),
+      this.#createAbortController.bind(this),
+      source);
+    this.abortController = null;
     this.outputString = '';
     this.startTime = 0;
     this.firstTokenTime = 0;
@@ -162,35 +177,51 @@ class TestRun extends EventTarget {
       this.firstTokenTime = Date.now();
     }
     this.tokenCount++;
+    this.#onOutput(str);
+  }
+
+  #onOutput(str) {
     this.outputString += str;
     this.#dispatch('output', { string: str });
+  }
+
+  #createAbortController() {
+    if (this.abortController === null) {
+      this.abortController = new AbortController();
+      this.#dispatch('createdabortcontroller', {
+        controller: this.abortController
+      });
+    }
+    return this.abortController;
   }
 
   #dispatch(event, detail) {
     this.dispatchEvent(new CustomEvent(event, { detail }));
   }
 
-  static #createRunner(logger, source) {
+  static #createRunner(logInfo, logOutput, createAbortController, source) {
     return new Function(
-      'log',
+      'logInfo',
+      'logOutput',
+      'createAbortController',
       'LanguageModel',
       'Translator',
       'LanguageDetector',
       'Summarizer',
       'Writer',
       'Rewriter',
-      'window',
       `return (async () => { ${source} })();`,
     ).bind(
       null,
-      logger,
+      logInfo,
+      logOutput,
+      createAbortController,
       window.LanguageModel,
       window.Translator,
       window.LanguageDetector,
       window.Summarizer,
       window.Writer,
       window.Rewriter,
-      window,
     );
   }
 }
