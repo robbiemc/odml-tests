@@ -71,6 +71,9 @@ button.primary:disabled {
 }
 
 .availability-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: bold;
 }
 .availability {
@@ -88,6 +91,15 @@ button.primary:disabled {
 .availability[data-label="downloadable"],
 .availability[data-label="downloading"] {
   background-color: rgb(245, 171, 0);
+}
+
+.download,
+.download-progress {
+  display: none;
+}
+.availability[data-label="downloadable"] ~ .download,
+.availability[data-label="downloading"] ~ .download-progress {
+  display: inline;
 }
 
 .card {

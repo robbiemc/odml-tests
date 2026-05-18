@@ -1,6 +1,5 @@
 /*
 TODO:
- * Download UI
  * Other test cases
  * Multimodality
  * Cancellation
@@ -11,15 +10,41 @@ TODO:
 
 function init() {
   TestCase.registerCustomElement();
+  $('.download').addEventListener('click', maybeStartDownload);
+  checkAvailability();
+}
+
+function maybeStartDownload() {
+  if (window.downloadStarted) {
+    return;
+  }
+  window.downloadStarted = true;
+  const downloadProgress = $('.download-progress');
+  LanguageModel.create({
+    monitor: (monitor) => {
+      monitor.addEventListener('downloadprogress', (e) => {
+        const percent = round(e.loaded * 100);
+        if (percent < 100) {
+          downloadProgress.value = percent;
+        } else {
+          checkAvailability();
+        }
+      });
+    }
+  });
   checkAvailability();
 }
 
 async function checkAvailability() {
   const status = await LanguageModel.availability();
-  // const status = 'unavailable';
   const statusElement = $('.availability');
   statusElement.innerText = status;
   statusElement.dataset.label = status;
+
+  if (status === 'downloading') {
+    // Start the download to monitor its progress.
+    maybeStartDownload();
+  }
 
   const available = status === 'available';
   for (let testCase of $$('test-case')) {
