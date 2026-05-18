@@ -1,7 +1,6 @@
 /*
 TODO:
  * Multimodality
- * s/createAbortController/setAbortController/
  * Handle exceptions gracefully
  * Disable buttons while script executing
  * Other APIs
@@ -100,7 +99,7 @@ class TestCase extends HTMLElement {
           $('.ttft', row).innerText = round(ttft / 1000, 2) + 's';
         }
       });
-      runner.addEventListener('createdabortcontroller', (e) => {
+      runner.addEventListener('hasabortcontroller', (e) => {
         this.abort.addEventListener('click', (_) => {
           e.detail.controller.abort();
           this.abort.classList.add('hidden');
@@ -128,7 +127,7 @@ class TestRun extends EventTarget {
     this.runFn = TestRun.#createRunner(
       this.#onOutput.bind(this),
       this.#onModelOutput.bind(this),
-      this.#createAbortController.bind(this),
+      this.#setAbortController.bind(this),
       source);
     this.abortController = null;
     this.outputString = '';
@@ -184,25 +183,22 @@ class TestRun extends EventTarget {
     this.#dispatch('output', { string: str });
   }
 
-  #createAbortController() {
-    if (this.abortController === null) {
-      this.abortController = new AbortController();
-      this.#dispatch('createdabortcontroller', {
-        controller: this.abortController
-      });
-    }
-    return this.abortController;
+  #setAbortController(abortController) {
+    this.abortController = abortController;
+    this.#dispatch('hasabortcontroller', {
+      controller: this.abortController
+    });
   }
 
   #dispatch(event, detail) {
     this.dispatchEvent(new CustomEvent(event, { detail }));
   }
 
-  static #createRunner(log, logToken, createAbortController, source) {
+  static #createRunner(log, logToken, setAbortController, source) {
     return new Function(
       'log',
       'logToken',
-      'createAbortController',
+      'setAbortController',
       'LanguageModel',
       'Translator',
       'LanguageDetector',
@@ -214,7 +210,7 @@ class TestRun extends EventTarget {
       null,
       log,
       logToken,
-      createAbortController,
+      setAbortController,
       window.LanguageModel,
       window.Translator,
       window.LanguageDetector,

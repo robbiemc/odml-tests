@@ -191,7 +191,8 @@
       <test-case>
         <span slot="title">Cancellation</span>
         <code slot="source">
-          const controller = createAbortController();
+          const controller = new AbortController();
+          setAbortController(controller);
 
           const session = await LanguageModel.create();
           const stream = session.promptStreaming(
