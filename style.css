@@ -166,6 +166,7 @@ button.primary:disabled {
 }
 .results .output {
   font-family: monospace;
+  white-space: pre-wrap;
 }
 .results .ttft,
 .results .tks {

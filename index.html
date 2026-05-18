@@ -18,15 +18,6 @@
         </p>
       </header>
 
-      <test-case nostats>
-        <code slot="title">prompt()</code>
-        <code slot="source">
-          const session = await LanguageModel.create();
-          const result = await session.prompt("Write a short, upbeat poem about coding.");
-          log(result);
-        </code>
-      </test-case>
-
       <test-case>
         <code slot="title">promptStreaming()</code>
         <code slot="source">
@@ -36,6 +27,190 @@
           for await (const chunk of stream) {
             log(chunk);
           }
+        </code>
+      </test-case>
+
+      <test-case>
+        <span slot="title">System Prompts</span>
+        <code slot="source">
+          const session = await LanguageModel.create({
+              initialPrompts: [
+                  { role: "system", content: "You are a witty pirate. All your responses must be in character." }
+              ]
+          });
+          const stream = await session.promptStreaming("What's the best thing about sailing the high seas?");
+          for await (const chunk of stream) {
+              log(chunk);
+          }
+        </code>
+      </test-case>
+
+      <test-case>
+        <span slot="title">Stateful Conversations</span>
+        <code slot="source">
+          const session = await LanguageModel.create();
+
+          log("User: Tell me a one liner about cats.\n");
+          log("Assistant: ");
+          const stream1 = session.promptStreaming("Tell me a one liner about cats.");
+          for await (const chunk of stream1) {
+            log(chunk);
+          }
+
+          log("\nUser: Tell me another one.\n");
+          log("Assistant: ");
+          const stream2 = session.promptStreaming("Tell me another one.");
+          for await (const chunk of stream2) {
+            log(chunk);
+          }
+        </code>
+      </test-case>
+
+      <test-case>
+        <span slot="title">Session Cloning</span>
+        <code slot="source">
+          const baseSession = await LanguageModel.create({
+            initialPrompts: [{ role: "system", content: "You are a travel guide for France that gives concise answers." }]
+          });
+
+          const clone1 = await baseSession.clone();
+          const clone2 = await baseSession.clone();
+
+          const stream1 = await clone1.promptStreaming("What is the biggest city?");
+          log('clone1: ');
+          for await (const chunk of stream1) {
+            log(chunk);
+          }
+
+          log('\nclone2: ');
+          const stream2 = await clone2.promptStreaming("What is the most iconic food?");
+          for await (const chunk of stream2) {
+            log(chunk);
+          }
+        </code>
+      </test-case>
+
+      <test-case>
+        <span slot="title">Multi-shot Prompting</span>
+        <code slot="source">
+          const session = await LanguageModel.create({
+            initialPrompts: [
+              { role: "system", content: "Suggest up to 3 emojis for a comment." },
+              { role: "user", content: "This is amazing!" },
+              { role: "assistant", content: "🎉, ✨, ❤️" },
+              { role: "user", content: "LGTM" },
+              { role: "assistant", content: "👍, ✅" }
+            ]
+          });
+          const stream = await session.promptStreaming("This is a big improvement!");
+          for await (const chunk of stream) {
+            log(chunk);
+          }
+        </code>
+      </test-case>
+
+      <test-case>
+        <span slot="title">Structured Output - JSON</span>
+        <code slot="source">
+          const schema = {
+            type: "object",
+            properties: {
+              city: { type: "string", description: "The city name." },
+              country: { type: "string", description: "The country name." },
+            },
+            required: ["city", "country"]
+          };
+
+          const session = await LanguageModel.create();
+          const result = await session.prompt(
+            "What is the capital of France?",
+            { responseConstraint: schema }
+          );
+
+          const parsed = JSON.parse(result);
+          log(JSON.stringify(parsed, null, 2));
+        </code>
+      </test-case>
+
+      <test-case>
+        <span slot="title">Structured Output - Regex</span>
+        <code slot="source">
+          const hexColorRegExp = /^#[0-9a-fA-F]{6}$/;
+
+          const session = await LanguageModel.create();
+          const result = await session.prompt(
+            "Give me a hex code for a calm blue color.",
+            { responseConstraint: hexColorRegExp }
+          );
+
+          log(result);
+        </code>
+      </test-case>
+
+      <test-case>
+        <span slot="title">Prefixes</span>
+        <code slot="source">
+          const session = await LanguageModel.create({
+            initialPrompts: [{
+              role: "system",
+              content: "You are a JavaScript code completion assistant. Complete the given function. Do not provide any explanations or surrounding text."
+            }]
+          });
+
+          const functionDescription = "A JavaScript function that calculates the factorial of a number.";
+          const functionSignature = "function factorial(n) {";
+
+          const stream = await session.promptStreaming([
+            { role: "user", content: functionDescription },
+            { role: "assistant", content: functionSignature, prefix: true }
+          ]);
+
+          log(functionSignature);
+          for await (const chunk of stream) {
+              log(chunk);
+          }
+        </code>
+      </test-case>
+
+      <test-case>
+        <code slot="title">append()</code>
+        <code slot="source">
+          const session = await LanguageModel.create();
+          await session.append([{role: "user", content: "Fact 1: The sky is blue."}]);
+          await session.append([{role: "user", content: "Fact 2: Grass is green."}]);
+
+          log("Appended two facts to the session context, now asking for a summary...\n\n");
+
+          const stream = await session.promptStreaming("Summarize the facts I've given you in a single sentence.");
+          for await (const chunk of stream) {
+            log(chunk);
+          }
+        </code>
+      </test-case>
+
+      <!--
+      <test-case>
+        <span slot="title">Cancellation</span>
+        <code slot="source">
+          // TODO
+        </code>
+      </test-case>
+      -->
+
+      <!--
+      <test-case>
+        <span slot="title"></span>
+        <code slot="source">
+        </code>
+      </test-case>
+      -->
+
+      <test-case nostats>
+        <code slot="title">prompt()</code>
+        <code slot="source">
+          const session = await LanguageModel.create();
+          const result = await session.prompt("Write a short, upbeat poem about coding.");
+          log(result);
         </code>
       </test-case>
     </div>
