@@ -8,45 +8,86 @@ TODO:
 
 function init() {
   TestCase.registerCustomElement();
-  $('.download').addEventListener('click', maybeStartDownload);
-  checkAvailability();
+  monitorAvailability();
 }
 
-function maybeStartDownload() {
-  if (window.downloadStarted) {
-    return;
-  }
-  window.downloadStarted = true;
-  const downloadProgress = $('.download-progress');
-  LanguageModel.create({
-    monitor: (monitor) => {
-      monitor.addEventListener('downloadprogress', (e) => {
-        const percent = round(e.loaded * 100);
-        if (percent < 100) {
-          downloadProgress.value = percent;
-        } else {
-          checkAvailability();
-        }
-      });
+function monitorAvailability() {
+  const statusElement = $('.availability');
+  const modelAvailability = new ModelAvailability();
+  modelAvailability.addEventListener('availabilitychanged', (e) => {
+    const availability = e.detail.availability;
+    statusElement.innerText = availability;
+    statusElement.dataset.label = availability;
+
+    const available = availability === 'available';
+    for (let testCase of $$('test-case')) {
+      testCase.setEnabled(available);
     }
   });
-  checkAvailability();
+
+  const downloadProgress = $('.download-progress');
+  modelAvailability.addEventListener('downloadprogress', (e) => {
+    downloadProgress.value = e.detail.percent;
+  });
+
+  $('.download').addEventListener(
+    'click',
+    modelAvailability.downloadModel.bind(modelAvailability),
+  );
 }
 
-async function checkAvailability() {
-  const status = await LanguageModel.availability();
-  const statusElement = $('.availability');
-  statusElement.innerText = status;
-  statusElement.dataset.label = status;
+class ModelAvailability extends EventTarget {
+  availability = 'unknown';
+  #model = null;
 
-  if (status === 'downloading') {
-    // Start the download to monitor its progress.
-    maybeStartDownload();
+  constructor() {
+    super();
+    this.#checkAvailability();
   }
 
-  const available = status === 'available';
-  for (let testCase of $$('test-case')) {
-    testCase.setEnabled(available);
+  downloadModel() {
+    this.#maybeStartDownload();
+  }
+
+  async #checkAvailability() {
+    const newAvailability = await LanguageModel.availability();
+    if (newAvailability === this.availability) {
+      return;
+    }
+    this.availability = newAvailability;
+
+    if (this.availability === 'downloading') {
+      // Start the download to monitor its progress.
+      this.#maybeStartDownload();
+    }
+
+    this.dispatchEvent(
+      new CustomEvent('availabilitychanged', {
+        detail: { availability: this.availability },
+      }),
+    );
+  }
+
+  #maybeStartDownload() {
+    if (this.#model !== null) {
+      return;
+    }
+    this.#model = LanguageModel.create({
+      monitor: (monitor) => {
+        monitor.addEventListener('downloadprogress', (e) => {
+          const percent = round(e.loaded * 100);
+          this.dispatchEvent(
+            new CustomEvent('downloadprogress', {
+              detail: { percent },
+            }),
+          );
+          if (percent === 100) {
+            this.#checkAvailability();
+          }
+        });
+      }
+    });
+    this.#checkAvailability();
   }
 }
 
