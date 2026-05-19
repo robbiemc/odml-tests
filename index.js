@@ -67,6 +67,7 @@ class TestCase extends HTMLElement {
     this.source = sourceEl.innerText;
     this.abort = $('.abort', shadowRoot);
     this.status = $('.status', shadowRoot);
+    this.inputs = $('slot[name=inputs]', shadowRoot).assignedElements();
     this.results = $('.results > tbody', shadowRoot);
 
     this.buttons = $$('.run', shadowRoot);
@@ -89,7 +90,7 @@ class TestCase extends HTMLElement {
       this.results.appendChild(row);
       this.results.parentElement.classList.remove('empty');
 
-      const runner = new TestRun(this.source);
+      const runner = new TestRun(this.inputs, this.source);
       // TODO: handle error events
       runner.addEventListener('output', (_) => {
         $('.output > span', row).innerText = runner.output();
@@ -122,12 +123,13 @@ class TestCase extends HTMLElement {
 }
 
 class TestRun extends EventTarget {
-  constructor(source) {
+  constructor(inputs, source) {
     super();
     this.runFn = TestRun.#createRunner(
       this.#onOutput.bind(this),
       this.#onModelOutput.bind(this),
       this.#setAbortController.bind(this),
+      inputs,
       source);
     this.abortController = null;
     this.outputString = '';
@@ -194,11 +196,12 @@ class TestRun extends EventTarget {
     this.dispatchEvent(new CustomEvent(event, { detail }));
   }
 
-  static #createRunner(log, logToken, setAbortController, source) {
+  static #createRunner(log, logToken, setAbortController, inputs, source) {
     return new Function(
       'log',
       'logToken',
       'setAbortController',
+      'inputs',
       'LanguageModel',
       'Translator',
       'LanguageDetector',
@@ -211,6 +214,7 @@ class TestRun extends EventTarget {
       log,
       logToken,
       setAbortController,
+      inputs,
       window.LanguageModel,
       window.Translator,
       window.LanguageDetector,

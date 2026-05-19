@@ -50,15 +50,15 @@
         <code slot="source">
           const session = await LanguageModel.create();
 
-          logInfo("User: Tell me a one liner about cats.\n");
-          logInfo("Assistant: ");
+          log("User: Tell me a one liner about cats.\n");
+          log("Assistant: ");
           const stream1 = session.promptStreaming("Tell me a one liner about cats.");
           for await (const chunk of stream1) {
             logToken(chunk);
           }
 
-          logInfo("\nUser: Tell me another one.\n");
-          logInfo("Assistant: ");
+          log("\nUser: Tell me another one.\n");
+          log("Assistant: ");
           const stream2 = session.promptStreaming("Tell me another one.");
           for await (const chunk of stream2) {
             logToken(chunk);
@@ -77,12 +77,12 @@
           const clone2 = await baseSession.clone();
 
           const stream1 = await clone1.promptStreaming("What is the biggest city?");
-          logInfo('clone1: ');
+          log('clone1: ');
           for await (const chunk of stream1) {
             logToken(chunk);
           }
 
-          logInfo('\nclone2: ');
+          log('\nclone2: ');
           const stream2 = await clone2.promptStreaming("What is the most iconic food?");
           for await (const chunk of stream2) {
             logToken(chunk);
@@ -179,7 +179,7 @@
           await session.append([{role: "user", content: "Fact 1: The sky is blue."}]);
           await session.append([{role: "user", content: "Fact 2: Grass is green."}]);
 
-          logInfo("Appended two facts to the session context, now asking for a summary...\n\n");
+          log("Appended two facts to the session context, now asking for a summary...\n\n");
 
           const stream = await session.promptStreaming("Summarize the facts I've given you in a single sentence.");
           for await (const chunk of stream) {
@@ -213,13 +213,11 @@
             expectedInputs: [{ type: "image" }]
           });
 
-          const image = document.getElementById('img-apple');
-
           const stream = await session.promptStreaming([{
             role: "user",
             content: [
               { type: "text", value: "Describe the image." },
-              { type: "image", value: image }
+              { type: "image", value: inputs[0] }
             ]
           }]);
 
@@ -227,7 +225,36 @@
             logToken(chunk);
           }
         </code>
-        <img slot="inputs" id="img-apple" src="./media/apple.jpg">
+        <img slot="inputs" src="./media/apple.jpg">
+      </test-case>
+
+      <test-case>
+        <span slot="title">Multimodality - Images</span>
+        <code slot="source">
+          const session = await LanguageModel.create({
+            expectedInputs: [{ type: "image" }]
+          });
+          console.log(inputs);
+
+          const stream = await session.promptStreaming([{
+            role: "user",
+            content: [
+              { type: "text", value: "Which of these images is not like the others?" },
+              { type: "image", value: inputs[0] },
+              { type: "image", value: inputs[1] },
+              { type: "image", value: inputs[2] },
+              { type: "image", value: inputs[3] }
+            ]
+          }]);
+
+          for await (const chunk of stream) {
+            logToken(chunk);
+          }
+        </code>
+        <img slot="inputs" src="./media/apple.jpg">
+        <img slot="inputs" src="./media/orange.jpg">
+        <img slot="inputs" src="./media/cat.jpg">
+        <img slot="inputs" src="./media/strawberry.jpg">
       </test-case>
 
       <!--
