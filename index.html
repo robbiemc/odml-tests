@@ -234,7 +234,6 @@
           const session = await LanguageModel.create({
             expectedInputs: [{ type: "image" }]
           });
-          console.log(inputs);
 
           const stream = await session.promptStreaming([{
             role: "user",
@@ -255,6 +254,31 @@
         <img slot="inputs" src="./media/orange.jpg">
         <img slot="inputs" src="./media/cat.jpg">
         <img slot="inputs" src="./media/strawberry.jpg">
+      </test-case>
+
+      <test-case>
+        <span slot="title">Multimodality - Audio</span>
+        <code slot="source">
+          const session = await LanguageModel.create({
+            expectedInputs: [{ type: "audio" }]
+          });
+
+          const arrayBuffer = await (await fetch(inputs[0].src)).arrayBuffer();
+          const audioBuffer = await (new AudioContext()).decodeAudioData(arrayBuffer);
+
+          const stream = await session.promptStreaming([{
+            role: "user",
+            content: [
+              { type: "text", value: "Transcribe this audio" },
+              { type: "audio", value: audioBuffer }
+            ]
+          }]);
+
+          for await (const chunk of stream) {
+            logToken(chunk);
+          }
+        </code>
+        <audio slot="inputs" controls src="./media/dream.mp3"></audio>
       </test-case>
 
       <!--

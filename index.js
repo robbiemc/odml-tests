@@ -1,6 +1,5 @@
 /*
 TODO:
- * Multimodality
  * Handle exceptions gracefully
  * Disable buttons while script executing
  * Other APIs
