@@ -1,9 +1,7 @@
 /*
 TODO:
- * Handle exceptions gracefully
  * Disable buttons while script executing
  * Other APIs
- * Maybe add global samplingMode flag?
 */
 
 function init() {
@@ -130,10 +128,10 @@ class TestCase extends HTMLElement {
       this.results.appendChild(row);
       this.results.parentElement.classList.remove('empty');
 
+      const output = $('.output > span', row);
       const runner = new TestRun(this.inputs, this.source);
-      // TODO: handle error events
       runner.addEventListener('output', (_) => {
-        $('.output > span', row).innerText = runner.output();
+        output.innerText = runner.output();
         $('.tks', row).innerText = round(runner.tks() * 1000, 1);
         const ttft = runner.ttft();
         if (ttft > 0) {
@@ -146,6 +144,14 @@ class TestCase extends HTMLElement {
           this.abort.classList.add('hidden');
         });
         this.abort.classList.remove('hidden');
+      });
+      runner.addEventListener('error', (e) => {
+        const err = e.detail.error;
+        console.error('Test failed:', err);
+        const msg = document.createElement('i');
+        msg.innerText = err.toString();
+        output.innerText = '';
+        output.appendChild(msg);
       });
       await runner.execute();
     }
