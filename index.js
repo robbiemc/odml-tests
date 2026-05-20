@@ -1,7 +1,3 @@
-/*
-TODO: Dark mode
-*/
-
 function init() {
   TestCase.registerCustomElement();
   monitorAvailability();

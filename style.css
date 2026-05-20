@@ -1,43 +1,45 @@
 :root {
   color-scheme: light dark;
 
-  --bg-color: light-dark(#f8f8f8, rgb(20, 22, 26));
-  --text-color: light-dark(#2e333d, #eee);
+  --bg-color: light-dark(#f8f8f8, #121418);
+  --text-color: light-dark(#2e333d, #e1e4e8);
 
-  --button-text-color: light-dark(black, rgb(235, 236, 240));
-  --button-border-color: light-dark(#d6d9e0, rgb(53, 58, 70));
-  --button-bg-color: light-dark(white, rgb(28, 33, 38));
-  --button-hover-border-color: light-dark(#b9bfca, rgb(75, 82, 99));
-  --button-hover-bg-color: light-dark(#f0f2f4, rgb(31, 34, 41));
-  --button-active-border-color: light-dark(#9ca4b4, rgb(96, 106, 128));
-  --button-active-bg-color: light-dark(#e2e4e9, rgb(42, 46, 55));
-  --button-disabled-text-color: light-dark(#2e333d, rgb(235, 236, 240));
-  --button-primary-text-color: light-dark(black, rgb(0, 31, 26));
-  --button-primary-border-color: light-dark(#00d1b2, rgb(0 209 178));
-  --button-primary-bg-color: light-dark(#00d1b2, rgb(0 209 178));
-  --button-primary-hover-border-color: light-dark(#00b89c, rgb(0, 235, 199));
-  --button-primary-hover-bg-color: light-dark(#00b89c, rgb(0, 235, 199));
-  --button-primary-active-border-color: light-dark(#009e86, rgb(5, 255, 218));
-  --button-primary-active-bg-color: light-dark(#009e86, rgb(5, 255, 218));
-  --button-danger-text-color: light-dark(black, rgb(0, 31, 26));
-  --button-danger-border-color: light-dark(#ff6685, rgb(5, 255, 218));
-  --button-danger-bg-color: light-dark(#ff6685, rgb(5, 255, 218));
-  --button-danger-hover-border-color: light-dark(#ff4d70, rgb(255, 128, 153));
-  --button-danger-hover-bg-color: light-dark(#ff4d70, rgb(255, 128, 153));
-  --button-danger-active-border-color: light-dark(#ff335c, rgb(255, 153, 173));
-  --button-danger-active-bg-color: light-dark(#ff335c, rgb(255, 153, 173));
+  --button-text-color: light-dark(#000000, #e1e4e8);
+  --button-border-color: light-dark(#d6d9e0, #3a3f4a);
+  --button-bg-color: light-dark(#ffffff, #1c1f26);
+  --button-hover-border-color: light-dark(#b9bfca, #4b515d);
+  --button-hover-bg-color: light-dark(#f0f2f4, #252932);
+  --button-active-border-color: light-dark(#9ca4b4, #5c6370);
+  --button-active-bg-color: light-dark(#e2e4e9, #2e333d);
+  --button-disabled-text-color: light-dark(#2e333d, #8c92a1);
 
-  --availability-text-color: light-dark(white, rgb(10, 31, 21));
-  --availability-available-bg-color: #3abb81;
-  --availability-unavailable-bg-color: #ff4d70;
-  --availability-downloadable-bg-color: #f5ab00;
-  --availability-downloading-bg-color: #f5ab00;
+  --button-primary-text-color: light-dark(#000000, #00221c);
+  --button-primary-border-color: light-dark(#00d1b2, #00d1b2);
+  --button-primary-bg-color: light-dark(#00d1b2, #00d1b2);
+  --button-primary-hover-border-color: light-dark(#00b89c, #1aebd1);
+  --button-primary-hover-bg-color: light-dark(#00b89c, #1aebd1);
+  --button-primary-active-border-color: light-dark(#009e86, #33ffe0);
+  --button-primary-active-bg-color: light-dark(#009e86, #33ffe0);
 
-  --card-bg-color: light-dark(white, rgb(28, 33, 38));
-  --box-border-color: light-dark(#ddd, rgb(85, 90, 102));
-  --results-border-color: light-dark(#d6d9e0, rgb(85, 90, 102));
-  --results-odd-row-color: light-dark(#f9fafb, rgb(24, 27, 32));
-  --results-collapsed-text-color: gray;
+  --button-danger-text-color: light-dark(#000000, #33000b);
+  --button-danger-border-color: light-dark(#ff6685, #ff6685);
+  --button-danger-bg-color: light-dark(#ff6685, #ff6685);
+  --button-danger-hover-border-color: light-dark(#ff4d70, #ff809a);
+  --button-danger-hover-bg-color: light-dark(#ff4d70, #ff809a);
+  --button-danger-active-border-color: light-dark(#ff335c, #ff99b0);
+  --button-danger-active-bg-color: light-dark(#ff335c, #ff99b0);
+
+  --availability-text-color: light-dark(#ffffff, #121418);
+  --availability-available-bg-color: light-dark(#3abb81, #42d392);
+  --availability-unavailable-bg-color: light-dark(#ff4d70, #ff6685);
+  --availability-downloadable-bg-color: light-dark(#f5ab00, #ffc53d);
+  --availability-downloading-bg-color: light-dark(#f5ab00, #ffc53d);
+
+  --card-bg-color: light-dark(#ffffff, #1c1f26);
+  --box-border-color: light-dark(#dddddd, #3a3f4a);
+  --results-border-color: light-dark(#d6d9e0, #3a3f4a);
+  --results-odd-row-color: light-dark(#f9fafb, #15181e);
+  --results-collapsed-text-color: light-dark(#808080, #9ca4b4);
 }
 
 body {
@@ -56,7 +58,7 @@ button {
   cursor: pointer;
   border-radius: 6px;
   font-weight: bold;
-  box-shadow: #3333330d 0px 1px 2px 0px, #3333330d 0px 2px 4px 0px;
+  box-shadow: light-dark(#3333330d, #00000040) 0px 1px 2px 0px, light-dark(#3333330d, #00000040) 0px 2px 4px 0px;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 button:hover:not(:disabled) {
@@ -170,7 +172,7 @@ button.danger:active:not(:disabled) {
   border-radius: .75rem;
   margin-bottom: 1.5rem;
   padding: .75rem 1.5rem;
-  box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
+  box-shadow: 0 4px 6px -1px light-dark(#0000001a, #0000004d), 0 2px 4px -2px light-dark(#0000001a, #0000004d);
 }
 .card > .title {
   margin-top: 0;
