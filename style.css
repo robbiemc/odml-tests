@@ -1,63 +1,110 @@
+:root {
+  color-scheme: light dark;
+
+  /*--bg-color: light-dark(#f8f8f8, rgb(20, 22, 26));
+  --text-color: light-dark(#2e333d, rgb(171, 177, 191));*/
+  --bg-color: #f8f8f8;
+  --text-color: #2e333d;
+
+  --button-text-color: black;
+  --button-border-color: #d6d9e0;
+  --button-bg-color: white;
+  --button-hover-border-color: #b9bfca;
+  --button-hover-bg-color: #f0f2f4;
+  --button-active-border-color: #9ca4b4;
+  --button-active-bg-color: #e2e4e9;
+  --button-disabled-text-color: #2e333d;
+  --button-primary-border-color: #00d1b2;
+  --button-primary-bg-color: #00d1b2;
+  --button-primary-hover-border-color: #00b89c;
+  --button-primary-hover-bg-color: #00b89c;
+  --button-primary-active-border-color: #009e86;
+  --button-primary-active-bg-color: #009e86;
+  --button-danger-border-color: #ff6685;
+  --button-danger-bg-color: #ff6685;
+  --button-danger-hover-border-color: #ff4d70;
+  --button-danger-hover-bg-color: #ff4d70;
+  --button-danger-active-border-color: #ff335c;
+  --button-danger-active-bg-color: #ff335c;
+
+  --availability-text-color: white;
+  --availability-available-bg-color: #3abb81;
+  --availability-unavailable-bg-color: #ff4d70;
+  --availability-downloadable-bg-color: #f5ab00;
+  --availability-downloading-bg-color: #f5ab00;
+
+  --card-bg-color: white;
+  --box-border-color: #ddd;
+  --results-border-color: #d6d9e0;
+  --results-odd-row-color: #f9fafb;
+  --results-info-text-color: gray;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f8f8;
-  color: rgb(46, 51, 61);
+  background-color: var(--bg-color);
+  color: var(--text-color);
   display: flex;
   justify-content: center;
 }
 
 button {
+  color: var(--button-text-color);
   padding: .75rem 1rem;
-  border: 1px solid rgb(214, 217, 224);
-  background-color: white;
+  border: 1px solid var(--button-border-color);
+  background-color: var(--button-bg-color);
   cursor: pointer;
   border-radius: 6px;
   font-weight: bold;
-  box-shadow: rgba(51, 51, 51, 0.05) 0px 1px 2px 0px, rgba(51, 51, 51, 0.05) 0px 2px 4px 0px;
+  box-shadow: #3333330d 0px 1px 2px 0px, #3333330d 0px 2px 4px 0px;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 button:hover:not(:disabled) {
-  background-color: rgb(240, 242, 244);
-  border-color: rgb(185, 191, 202);
+  background-color: var(--button-hover-bg-color);
+  border-color: var(--button-hover-border-color);
   z-index: 2;
 }
 button:active:not(:disabled) {
-  background-color: rgb(226, 228, 233);
-  border-color: rgb(156, 164, 180);
+  background-color: var(--button-active-bg-color);
+  border-color: var(--button-active-border-color);
   box-shadow: none;
   z-index: 2;
 }
 button:disabled {
-  color: rgb(46, 51, 61);
+  color: var(--button-disabled-text-color);
   cursor: not-allowed;
   box-shadow: none;
   opacity: 0.5;
 }
 button.primary {
-  background-color: rgb(0, 209, 178);
-  border-color: rgb(0, 209, 178);
+  background-color: var(--button-primary-bg-color);
+  border-color: var(--button-primary-border-color);
   padding: .75rem 1.5rem;
 }
 button.primary:hover:not(:disabled) {
-  background-color: rgb(0, 184, 156);
-  border-color: rgb(0, 184, 156);
+  background-color: var(--button-primary-hover-bg-color);
+  border-color: var(--button-primary-hover-border-color);
+  z-index: inherit;
 }
 button.primary:active:not(:disabled) {
-  background-color: rgb(0, 158, 134);
-  border-color: rgb(0, 158, 134);
+  background-color: var(--button-primary-active-bg-color);
+  border-color: var(--button-primary-active-border-color);
+  z-index: inherit;
 }
 button.danger {
-  background-color: rgb(255, 102, 133);
-  border-color: rgb(255, 102, 133);
+  background-color: var(--button-danger-bg-color);
+  border-color: var(--button-danger-border-color);
   padding: .75rem 1.5rem;
 }
 button.danger:hover:not(:disabled) {
-  background-color: rgb(255, 77, 112);
-  border-color: rgb(255, 77, 112);
+  background-color: var(--button-danger-hover-bg-color);
+  border-color: var(--button-danger-hover-border-color);
+  z-index: inherit;
 }
 button.danger:active:not(:disabled) {
-  background-color: rgb(255, 51, 92);
-  border-color: rgb(255, 51, 92);
+  background-color: var(--button-danger-active-bg-color);
+  border-color: var(--button-danger-active-border-color);
+  z-index: inherit;
 }
 
 .button-group {
@@ -90,19 +137,21 @@ button.danger:active:not(:disabled) {
 }
 .availability {
   text-transform: capitalize;
-  color: white;
+  color: var(--availability-text-color);
   border-radius: 100px;
   padding: .25rem .75rem;
 }
 .availability[data-label="available"] {
-  background-color: rgb(58, 187, 129);
+  background-color: var(--availability-available-bg-color);
 }
 .availability[data-label="unavailable"] {
-  background-color: rgb(255, 77, 112);
+  background-color: var(--availability-unavailable-bg-color);
 }
-.availability[data-label="downloadable"],
+.availability[data-label="downloadable"] {
+  background-color: var(--availability-downloadable-bg-color);
+}
 .availability[data-label="downloading"] {
-  background-color: rgb(245, 171, 0);
+  background-color: var(--availability-downloading-bg-color);
 }
 
 .download,
@@ -115,11 +164,11 @@ button.danger:active:not(:disabled) {
 }
 
 .card {
-  background-color: white;
+  background-color: var(--card-bg-color);
   border-radius: .75rem;
   margin-bottom: 1.5rem;
   padding: .75rem 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
 }
 .card > .title {
   margin-top: 0;
@@ -127,7 +176,7 @@ button.danger:active:not(:disabled) {
 
 .source-box {
   white-space: pre-wrap;
-  border: 1px solid #ddd;
+  border: 1px solid var(--box-border-color);
   border-radius: .5rem;
   padding: .5rem;
   line-height: 1.4;
@@ -156,14 +205,14 @@ button.danger:active:not(:disabled) {
   display: none;
 }
 .results > tbody > tr {
-  border-top: 1px solid rgb(214, 217, 224);
+  border-top: 1px solid var(--results-border-color);
 }
 .results td {
   padding: 0.25rem;
   vertical-align: baseline;
 }
 .results > tbody > tr:nth-child(2n) {
-  background-color: rgb(249, 250, 251);
+  background-color: var(--results-odd-row-color);
 }
 .results .placeholder {
   font-style: italic;
@@ -191,7 +240,7 @@ button.danger:active:not(:disabled) {
   -webkit-line-clamp: 1;
   line-clamp: 1;
   overflow: hidden;
-  color: gray;
+  color: var(--results-info-text-color);
 }
 .results .output {
   font-family: monospace;
