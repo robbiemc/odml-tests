@@ -1,13 +1,12 @@
 /*
-TODO:
- * Disable buttons while script executing
- * Other APIs
+TODO: Dark mode
 */
 
 function init() {
   TestCase.registerCustomElement();
   monitorAvailability();
 }
+document.addEventListener('DOMContentLoaded', init);
 
 function monitorAvailability() {
   const statusElement = $('.availability');
@@ -145,15 +144,19 @@ class TestCase extends HTMLElement {
         });
         this.abort.classList.remove('hidden');
       });
-      runner.addEventListener('error', (e) => {
-        const err = e.detail.error;
-        console.error('Test failed:', err);
+
+      this.setEnabled(false);
+      try {
+        await runner.execute();
+      } catch (e) {
+        console.error('Test failed:', e);
         const msg = document.createElement('i');
-        msg.innerText = err.toString();
+        msg.innerText = e.toString();
         output.innerText = '';
         output.appendChild(msg);
-      });
-      await runner.execute();
+      } finally {
+        this.setEnabled(true);
+      }
     }
   }
 
@@ -194,7 +197,7 @@ class TestRun extends EventTarget {
       if (err.name === 'AbortError') {
         this.#dispatch('cancel');
       } else {
-        this.#dispatch('error', { error: err });
+        throw err;
       }
     }
   }
@@ -302,5 +305,3 @@ function unindent(s) {
   }
   return unindented.trimEnd();
 }
-
-document.addEventListener('DOMContentLoaded', init);

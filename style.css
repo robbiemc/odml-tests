@@ -126,6 +126,7 @@ button.danger:active:not(:disabled) {
 }
 
 .source-box {
+  white-space: pre-wrap;
   border: 1px solid #ddd;
   border-radius: .5rem;
   padding: .5rem;
