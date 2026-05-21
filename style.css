@@ -124,10 +124,6 @@ button.danger:active:not(:disabled) {
   border-bottom-right-radius: 0;
 }
 
-.hidden {
-  display: none;
-}
-
 .container {
   width: 100%;
   max-width: 1000px;
@@ -175,7 +171,23 @@ button.danger:active:not(:disabled) {
   box-shadow: 0 4px 6px -1px light-dark(#0000001a, #0000004d), 0 2px 4px -2px light-dark(#0000001a, #0000004d);
 }
 .card > .title {
+  position: relative;
   margin-top: 0;
+}
+.card > .title > .link {
+  display: none;
+}
+.card > .title:hover > .link {
+  display: inline-block;
+  position: absolute;
+  padding-right: .2rem;
+  right: calc(100%);
+  text-decoration: none;
+  font-weight: bolder;
+  color: var(--text-color);
+}
+.card > .title > .link:hover {
+  text-decoration: underline;
 }
 
 .source-box {
@@ -199,6 +211,12 @@ button.danger:active:not(:disabled) {
 .controls {
   display: flex;
   gap: 1rem;
+}
+.controls > .abort {
+  display: none;
+}
+.controls.has-abort > .abort {
+  display: inline;
 }
 
 .results {

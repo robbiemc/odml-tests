@@ -98,10 +98,20 @@ class TestCase extends HTMLElement {
     const sourceEl = $('slot[name=source]', shadowRoot).assignedElements()[0];
     sourceEl.innerText = unindent(sourceEl.innerText);
     this.source = sourceEl.innerText;
+    this.controls = $('.controls', shadowRoot);
     this.abort = $('.abort', shadowRoot);
-    this.status = $('.status', shadowRoot);
     this.inputs = $('slot[name=inputs]', shadowRoot).assignedElements();
     this.results = $('.results > tbody', shadowRoot);
+
+    const title = $('.title', shadowRoot);
+    const id = $('slot[name=title]', title).assignedElements()[0]?.id;
+    if (id) {
+      const link = document.createElement('a');
+      link.classList.add('link');
+      link.innerText = '#';
+      link.href = `#${id}`;
+      title.appendChild(link);
+    }
 
     this.buttons = $$('.run', shadowRoot);
     for (let btn of this.buttons) {
@@ -136,9 +146,9 @@ class TestCase extends HTMLElement {
       runner.addEventListener('hasabortcontroller', (e) => {
         this.abort.addEventListener('click', (_) => {
           e.detail.controller.abort();
-          this.abort.classList.add('hidden');
+          this.controls.classList.remove('has-abort');
         });
-        this.abort.classList.remove('hidden');
+        this.controls.classList.add('has-abort');
       });
 
       this.setEnabled(false);
