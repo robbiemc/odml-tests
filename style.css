@@ -177,7 +177,7 @@ button.danger:active:not(:disabled) {
 .card > .title > .link {
   display: none;
 }
-.card > .title:hover > .link {
+.card > .title:hover > .link[href] {
   display: inline-block;
   position: absolute;
   padding-right: .2rem;

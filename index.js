@@ -103,14 +103,9 @@ class TestCase extends HTMLElement {
     this.inputs = $('slot[name=inputs]', shadowRoot).assignedElements();
     this.results = $('.results > tbody', shadowRoot);
 
-    const title = $('.title', shadowRoot);
-    const id = $('slot[name=title]', title).assignedElements()[0]?.id;
+    const id = $('.title > slot[name=title]', shadowRoot).assignedElements()[0]?.id;
     if (id) {
-      const link = document.createElement('a');
-      link.classList.add('link');
-      link.innerText = '#';
-      link.href = `#${id}`;
-      title.appendChild(link);
+      $('.title > .link', shadowRoot).href = `#${id}`;
     }
 
     this.buttons = $$('.run', shadowRoot);

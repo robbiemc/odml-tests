@@ -302,7 +302,10 @@
     <template id="test-case-template">
       <link rel="stylesheet" href="style.css" />
       <section class="test-case card">
-        <h2 class="title"><slot name="title">Test case title</slot></h2>
+        <h2 class="title">
+          <slot name="title">Test case title</slot>
+          <a class="link">#</a>
+        </h2>
         <pre class="source-box"><slot name="source"></slot></pre>
         <div class="inputs"><slot name="inputs"></slot></div>
         <div class="controls">
