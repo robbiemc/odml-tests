@@ -22,6 +22,7 @@ function monitorAvailability() {
   modelAvailability.addEventListener('downloadprogress', (e) => {
     downloadProgress.value = e.detail.percent;
   });
+  modelAvailability.start();
 
   $('.download').addEventListener(
     'click',
@@ -35,6 +36,9 @@ class ModelAvailability extends EventTarget {
 
   constructor() {
     super();
+  }
+
+  start() {
     this.#checkAvailability();
   }
 
@@ -43,7 +47,10 @@ class ModelAvailability extends EventTarget {
   }
 
   async #checkAvailability() {
-    const newAvailability = await LanguageModel.availability();
+    let newAvailability = 'unavailable';
+    if (window.LanguageModel && LanguageModel.availability) {
+      newAvailability = await LanguageModel.availability();
+    }
     if (newAvailability === this.availability) {
       return;
     }
