@@ -46,11 +46,11 @@ class ModelAvailability extends EventTarget {
     let newAvailability = 'unavailable';
     if (window.LanguageModel && LanguageModel.availability) {
       newAvailability = await LanguageModel.availability();
-    } else {
-      // Prevent this function from returning synchronously so callers
-      // have time to register event handlers.
-      await new Promise(resolve => setTimeout(resolve, 0));
     }
+    // Prevent this function from returning synchronously so callers
+    // will always have time to register event handlers to receive
+    // the event that might get dispatched below.
+    await new Promise(resolve => setTimeout(resolve, 0));
     if (newAvailability === this.availability) {
       return;
     }
@@ -75,18 +75,20 @@ class ModelAvailability extends EventTarget {
     this.#model = LanguageModel.create({
       monitor: (monitor) => {
         monitor.addEventListener('downloadprogress', (e) => {
-          const percent = round(e.loaded * 100);
+          const percent = Math.round(e.loaded * 100);
           this.dispatchEvent(
             new CustomEvent('downloadprogress', {
               detail: { percent },
             }),
           );
           if (percent === 100) {
+            // Check for the 'downloading' => 'available' change.
             this.#checkAvailability();
           }
         });
       }
     });
+    // Check for the 'available' => 'downloading' change.
     this.#checkAvailability();
   }
 }

@@ -137,20 +137,23 @@ button.danger:active:not(:disabled) {
 }
 .availability {
   text-transform: capitalize;
-  color: var(--availability-text-color);
   border-radius: 100px;
   padding: .25rem .75rem;
 }
 .availability[data-label="available"] {
+  color: var(--availability-text-color);
   background-color: var(--availability-available-bg-color);
 }
 .availability[data-label="unavailable"] {
+  color: var(--availability-text-color);
   background-color: var(--availability-unavailable-bg-color);
 }
 .availability[data-label="downloadable"] {
+  color: var(--availability-text-color);
   background-color: var(--availability-downloadable-bg-color);
 }
 .availability[data-label="downloading"] {
+  color: var(--availability-text-color);
   background-color: var(--availability-downloading-bg-color);
 }
 
