@@ -51,6 +51,10 @@ class ModelAvailability extends EventTarget {
     // will always have time to register event handlers to receive
     // the event that might get dispatched below.
     await new Promise(resolve => setTimeout(resolve, 0));
+    this.#setAvailability(newAvailability);
+  }
+
+  #setAvailability(newAvailability) {
     if (newAvailability === this.availability) {
       return;
     }
@@ -68,7 +72,7 @@ class ModelAvailability extends EventTarget {
     );
   }
 
-  #maybeStartDownload() {
+  async #maybeStartDownload() {
     if (this.#model !== null) {
       return;
     }
@@ -81,14 +85,22 @@ class ModelAvailability extends EventTarget {
               detail: { percent },
             }),
           );
-          if (percent === 100) {
-            // Check for the 'downloading' => 'available' change.
-            this.#checkAvailability();
-          }
         });
       }
     });
-    // Check for the 'available' => 'downloading' change.
+
+    if (this.availability === 'downloadable') {
+      this.#setAvailability('downloading');
+      this.dispatchEvent(
+        new CustomEvent('downloadprogress', {
+          detail: { percent: 0 },
+        }),
+      );
+    }
+
+    // Wait for the model to load to trigger the 'downloading' =>
+    // 'available' change.
+    await this.#model;
     this.#checkAvailability();
   }
 }
