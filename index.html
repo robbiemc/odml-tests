@@ -31,6 +31,44 @@
       </test-case>
 
       <test-case>
+        <span slot="title" id="long-prompt">Long Prompt</span>
+        <code slot="source">
+          const prompt = `
+              Analyze the following scenario and provide a structured response.
+
+              Core Task:
+
+              Read the following two short, contradictory passages about the future of artificial intelligence.
+
+              Passage A: "AI promises a utopian future, a new renaissance where human potential is unbound, solving age-old problems of disease, scarcity, and labor."
+
+              Passage B: "The unchecked rise of AI is an existential gamble, a path toward technological servitude where human autonomy is rendered obsolete by superior, unfeeling logic."
+
+              Your task is to write a concise synthesis of these two viewpoints. First, identify the core logical fallacy present in both passages (e.g., strawman, false dilemma, appeal to emotion, etc.) and briefly justify your choice. Then, explain how a decentralized, federated learning model might mitigate the risks described in Passage B while still failing to guarantee the utopia of Passage A.
+
+              Formatting Requirements:
+
+              The entire response must be under 250 words.
+
+              The tone must be formal, critical, and slightly detached.
+
+              The response MUST be structured under the following exact Markdown header:
+
+              ### Philosophical & Technical Synthesis
+
+              Final Instruction:
+              Conclude your response with a single sentence, starting with the phrase "Self-Assessment:", rating your own compliance with all of the above constraints on a scale from 1.0 to 5.0, and do not explain the rating.`;
+
+          const session = await LanguageModel.create();
+          const stream = session.promptStreaming(prompt);
+
+          for await (const chunk of stream) {
+            logToken(chunk);
+          }
+        </code>
+      </test-case>
+
+      <test-case>
         <span slot="title" id="system-prompts">System Prompts</span>
         <code slot="source">
           const session = await LanguageModel.create({
