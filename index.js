@@ -238,9 +238,9 @@ class TestRun extends EventTarget {
   }
 
   tks() {
-    if (this.firstTokenTime > 0) {
+    if (this.tokenCount >= 2) {
       const end = this.endTime || Date.now();
-      return this.tokenCount / (end - this.firstTokenTime);
+      return (this.tokenCount - 1) / (end - this.firstTokenTime);
     }
     return 0;
   }
