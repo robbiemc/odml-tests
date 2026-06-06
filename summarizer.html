@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ODML Tests - Summarizer API</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Summarizer API</h1>
+        <p class="availability-message">
+          API Status:
+          <span class="availability">Checking availability...</span>
+          <button class="download">Download</button>
+          <progress class="download-progress" max="100" value="0"></progress>
+        </p>
+      </header>
+
+      <test-case>
+        <code slot="title" id="summarizeStreaming">summarizeStreaming()</code>
+        <code slot="source">
+          const summarizer = await Summarizer.create();
+          const stream = summarizer.summarizeStreaming("Hello");
+
+          for await (const chunk of stream) {
+            logToken(chunk);
+          }
+        </code>
+      </test-case>
+
+      <!--
+        TODO:
+          long summarization
+          smaller model
+          context
+          format (markdown, plain-text)
+          length (short, medium, long)
+          type (headline, key-points, teaser, tldr)
+          cancellation
+      -->
+
+      <!--<test-case>
+        <span slot="title" id="cancellation">Cancellation</span>
+        <code slot="source">
+          const controller = new AbortController();
+          setAbortController(controller);
+
+          const session = await LanguageModel.create();
+          const stream = session.promptStreaming(
+              "Tell me the entire history of AI in great detail.",
+              { signal: controller.signal }
+          );
+
+          for await (const chunk of stream) {
+              logToken(chunk);
+          }
+        </code>
+      </test-case>-->
+
+      <!-- test-case template
+      <test-case>
+        <span slot="title" id=""></span>
+        <code slot="source">
+        </code>
+      </test-case>
+      -->
+    </div>
+
+    <template id="test-case-template">
+      <link rel="stylesheet" href="style.css" />
+      <section class="test-case card">
+        <h2 class="title">
+          <slot name="title">Test case title</slot>
+          <a class="link">#</a>
+        </h2>
+        <pre class="source-box"><slot name="source"></slot></pre>
+        <div class="inputs"><slot name="inputs"></slot></div>
+        <div class="controls">
+          <span class="button-group">
+            <button class="run primary wide" data-count="1" disabled>Run</button>
+            <button class="run" data-count="3" disabled>x3</button>
+            <button class="run" data-count="5" disabled>x5</button>
+          </span>
+          <button class="danger abort hidden">Abort</button>
+          <span class="status"></span>
+        </div>
+        <table class="results empty">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Output</th>
+              <th class="ttft">TTFT</th>
+              <th class="tks">tok/s</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </template>
+
+    <template id="output-row-template">
+      <tr>
+        <td class="collapse"><button></button></td>
+        <td class="output"><span><i>Waiting for output...</i></span></td>
+        <td class="ttft"></td>
+        <td class="tks"></td>
+      </tr>
+    </template>
+
+    <script src="index.js"></script>
+  </body>
+</html>
