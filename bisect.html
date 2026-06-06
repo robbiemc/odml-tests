@@ -1,0 +1,206 @@
+<!-- 99.9% AI generated (Gemini) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bisection Tracker</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .setup {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            width: 80px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: opacity 0.2s;
+        }
+        button:hover:not(:disabled) {
+            opacity: 0.8;
+        }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        #start-btn {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        #test-area {
+            display: none;
+            margin-bottom: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+        #current-test {
+            font-size: 5em;
+            margin: 10px 0 20px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .success {
+            color: #dc3545 !important;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        #fail-btn { background-color: #dc3545; color: white; }
+        #pass-btn { background-color: #28a745; color: white; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        .pass-text { color: #28a745; font-weight: bold; }
+        .fail-text { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bisection Tracker</h2>
+
+    <div class="setup">
+        <label>Low (Good): <input type="number" id="low-input" placeholder="e.g. 1"></label>
+        <label>High (Bad): <input type="number" id="high-input" placeholder="e.g. 100"></label>
+        <button id="start-btn" onclick="startBisection()">Start</button>
+    </div>
+
+    <div id="test-area">
+        <div>Testing:</div>
+        <div id="current-test">-</div>
+        <div class="controls">
+            <button id="pass-btn" onclick="recordResult(true)">Pass</button>
+            <button id="fail-btn" onclick="recordResult(false)">Fail</button>
+        </div>
+    </div>
+
+    <table id="history-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>Step</th>
+                <th>Tested Number</th>
+                <th>Result</th>
+                <th>Next Range</th>
+            </tr>
+        </thead>
+        <tbody id="history-body">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let currentLow, currentHigh, currentTest, step;
+
+    function startBisection() {
+        currentLow = parseInt(document.getElementById('low-input').value);
+        currentHigh = parseInt(document.getElementById('high-input').value);
+
+        if (isNaN(currentLow) || isNaN(currentHigh) || currentLow > currentHigh) {
+            alert("Please enter valid numbers. Low must be less than or equal to High.");
+            return;
+        }
+
+        // Disable setup inputs
+        document.getElementById('start-btn').disabled = true;
+        document.getElementById('low-input').disabled = true;
+        document.getElementById('high-input').disabled = true;
+
+        // Show test area and table
+        document.getElementById('test-area').style.display = 'block';
+        document.getElementById('history-table').style.display = 'table';
+        step = 1;
+
+        calculateNext();
+    }
+
+    function calculateNext() {
+        // Convergence condition
+        if (currentLow >= currentHigh) {
+            let display = document.getElementById('current-test');
+            display.innerText = currentLow;
+            display.classList.add('success');
+
+            // Disable Pass/Fail buttons
+            document.getElementById('fail-btn').disabled = true;
+            document.getElementById('pass-btn').disabled = true;
+            return;
+        }
+
+        // Calculate midpoint
+        currentTest = Math.floor((currentLow + currentHigh) / 2);
+        document.getElementById('current-test').innerText = currentTest;
+    }
+
+    function recordResult(passed) {
+        // Add current result to the history table
+        const tbody = document.getElementById('history-body');
+        const row = tbody.insertRow(0); // Insert at top of tbody
+
+        row.insertCell(0).innerText = step++;
+        row.insertCell(1).innerText = currentTest;
+
+        const resultCell = row.insertCell(2);
+        if (passed) {
+            resultCell.innerText = "Pass";
+            resultCell.className = "pass-text";
+            // Assuming we are isolating the first failure:
+            // If it passes, the bad commit must be strictly after this test.
+            currentLow = currentTest + 1;
+        } else {
+            resultCell.innerText = "Fail";
+            resultCell.className = "fail-text";
+            // If it fails, this might be the first failure, so it becomes the new high limit.
+            currentHigh = currentTest;
+        }
+
+        row.insertCell(3).innerText = `[${currentLow}, ${currentHigh}]`;
+
+        // Advance to the next calculation
+        calculateNext();
+    }
+</script>
+
+</body>
+</html>
