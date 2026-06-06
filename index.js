@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', init);
 
 function monitorAvailability() {
   const statusElement = $('.availability');
-  const modelAvailability = new ModelAvailability();
+  const modelAvailability = new ModelAvailability(statusElement.dataset.api);
   modelAvailability.addEventListener('availabilitychanged', (e) => {
     const availability = e.detail.availability;
     statusElement.innerText = availability;
@@ -30,11 +30,13 @@ function monitorAvailability() {
 }
 
 class ModelAvailability extends EventTarget {
+  #api;
   availability = 'unknown';
   #model = null;
 
-  constructor() {
+  constructor(apiName = 'LanguageModel') {
     super();
+    this.#api = window[apiName];
     this.#checkAvailability();
   }
 
@@ -44,8 +46,8 @@ class ModelAvailability extends EventTarget {
 
   async #checkAvailability() {
     let newAvailability = 'unavailable';
-    if (window.LanguageModel && LanguageModel.availability) {
-      newAvailability = await LanguageModel.availability();
+    if (this.#api && this.#api.availability) {
+      newAvailability = await this.#api.availability();
     }
     // Prevent this function from returning synchronously so callers
     // will always have time to register event handlers to receive
@@ -73,10 +75,10 @@ class ModelAvailability extends EventTarget {
   }
 
   async #maybeStartDownload() {
-    if (this.#model !== null) {
+    if (!this.#api || this.#model) {
       return;
     }
-    this.#model = LanguageModel.create({
+    this.#model = this.#api.create({
       monitor: (monitor) => {
         monitor.addEventListener('downloadprogress', (e) => {
           const percent = Math.round(e.loaded * 100);
